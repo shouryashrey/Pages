@@ -1,4 +1,4 @@
-# pages
+# Pages
 
 A new Flutter project.
 
