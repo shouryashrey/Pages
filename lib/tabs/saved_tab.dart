@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pages/widgets/custom_action_bar.dart';
+
+import '../constants.dart';
 
 class SavedTab extends StatelessWidget {
   // const SavedTab({Key? key}) : super(key: key);
@@ -6,8 +9,14 @@ class SavedTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: SafeArea(
-        child: Text('Saved Tab'),
+      child: Stack(
+        children: [
+          Center(child: Text('Saved Tab', style: Constants.regularDarkText)),
+          CustomActionBar(
+            title: 'Saved',
+            hasBackArrrow: false,
+          ),
+        ],
       ),
     );
   }
