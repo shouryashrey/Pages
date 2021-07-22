@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pages/widgets/custom_action_bar.dart';
+import 'package:pages/widgets/image_swipe.dart';
 
 class ProductPage extends StatefulWidget {
   final String productId;
@@ -39,10 +40,16 @@ class _ProductPageState extends State<ProductPage> {
                   List imageList = documentData['images'];
                   List productSizes = documentData['size'];
 
-                  return Scaffold(
-                    body: Center(
-                      child: Text('Ho gya'),
-                    ),
+                  return ListView(
+                    padding: EdgeInsets.all(0),
+                    children: [
+                      SizedBox(
+                        height: 100,
+                      ),
+                      ImageSwipe(
+                        imageList: imageList,
+                      ),
+                    ],
                   );
                 }
 
