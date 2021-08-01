@@ -24,6 +24,8 @@ dependencies:
   # Google Fonts
   google_fonts: ^1.1.0
 
+  expandable_text: 2.2.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
