@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:pages/services/firebase_services.dart';
 import 'package:pages/widgets/custom_action_bar.dart';
 import 'package:pages/widgets/image_swipe.dart';
 import 'package:expandable_text/expandable_text.dart';
@@ -16,24 +17,31 @@ class ProductPage extends StatefulWidget {
 }
 
 class _ProductPageState extends State<ProductPage> {
-  final CollectionReference _productsRef =
-      FirebaseFirestore.instance.collection("Products");
-
-  final CollectionReference _usersRef = FirebaseFirestore.instance.collection(
-      "Users"); //User -> UserId(document) -> Cart -> ProductId(Document)
-
-  User _user = FirebaseAuth.instance.currentUser;
+  FirebaseServices _firebaseServices = FirebaseServices();
 
   Future _addToCart() {
-    return _usersRef
-        .doc(_user.uid)
+    return _firebaseServices.usersRef
+        .doc(_firebaseServices.getUserId())
         .collection("Cart")
         .doc(widget.productId)
-        .set({"quantity" : 1});
+        .set({"quantity": 1});
   }
 
-  final SnackBar _snackBar = SnackBar(content: Text("Product added to the cart"),);
+  Future _addToSaved() {
+    return _firebaseServices.usersRef
+        .doc(_firebaseServices.getUserId())
+        .collection("Saved")
+        .doc(widget.productId)
+        .set({"quantity": 1});
+  }
 
+  final SnackBar _snackBarCart = SnackBar(
+    content: Text("Product added to the cart"),
+  );
+
+  final SnackBar _snackBarSaved = SnackBar(
+    content: Text("Product saved for later"),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +50,7 @@ class _ProductPageState extends State<ProductPage> {
         child: Stack(
           children: [
             FutureBuilder(
-              future: _productsRef.doc(widget.productId).get(),
+              future: _firebaseServices.productsRef.doc(widget.productId).get(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return Scaffold(
@@ -137,10 +145,11 @@ class _ProductPageState extends State<ProductPage> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             GestureDetector(
-                              //   onTap: () async {
-                              //     await _addToSaved();
-                              //     Scaffold.of(context).showSnackBar(_snackBar);
-                              //   },
+                              onTap: () async {
+                                await _addToSaved();
+                                Scaffold.of(context)
+                                    .showSnackBar(_snackBarSaved);
+                              },
                               child: Container(
                                 width: 65.0,
                                 height: 65.0,
@@ -161,7 +170,8 @@ class _ProductPageState extends State<ProductPage> {
                               child: GestureDetector(
                                 onTap: () async {
                                   await _addToCart();
-                                  Scaffold.of(context).showSnackBar(_snackBar);
+                                  Scaffold.of(context)
+                                      .showSnackBar(_snackBarCart);
                                 },
                                 child: Container(
                                   height: 65.0,
